@@ -1,0 +1,25 @@
+.header {
+  background-color: rgb(255 255 255 / 80%);
+}
+
+.header .list {
+  display: flex;
+}
+
+.header .list li {
+  padding: 10px 20px;
+}
+.header .list li a {
+  text-decoration: none;
+  color: black;
+}
+.header .list li a:hover {
+  opacity: 0.75;
+}
+.header .list li a.active {
+  text-decoration: underline;
+}
+.header .list li:first-child {
+  margin-right: auto;
+  color: brown;
+}
