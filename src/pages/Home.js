@@ -1,12 +1,7 @@
-import { Fragment } from "react";
 import SearchComponent from "../components/Search";
 
 const HomePage = () => {
-  return (
-    <Fragment>
-      <SearchComponent />
-    </Fragment>
-  );
+  return <SearchComponent />;
 };
 
 export default HomePage;

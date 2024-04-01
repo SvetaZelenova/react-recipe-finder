@@ -1,25 +1,32 @@
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
-import { Card, Carousel, Col } from "antd";
-import { useEffect, useState } from "react";
+import { Alert, Card, Carousel, Col } from "antd";
 import { Link } from "react-router-dom";
+import useFetch from "../hooks/useFetch";
 
 const RecipeCarousel = ({ type }) => {
-  const [foundRecipes, setFoundRecipes] = useState([]);
-  useEffect(() => {
-    fetchRecipesByCategory(type);
-  }, [type]);
   const fetchRecipesByCategory = async (type) => {
-    const request =
+    const url =
       type === "random"
         ? `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`
         : `https://api.spoonacular.com/recipes/complexSearch?apiKey=${process.env.REACT_APP_API_KEY}&cuisine=${type}&number=9`;
-    const api = await fetch(request);
-    const data = await api.json();
-    type === "random" ? setFoundRecipes(data.recipes) : setFoundRecipes(data.results);
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw Error(`couldn't fetch the data. please try again`);
+    }
+    const data = await response.json();
+    return type === "random" ? data.recipes : data.results;
   };
+
+  const { fetchedData: foundRecipes, error } = useFetch(
+    fetchRecipesByCategory,
+    type
+  );
   const SlickButtonFix = ({ currentSlide, slideCount, children, ...props }) => (
     <span {...props}>{children}</span>
   );
+  if (error) {
+    return <Alert message="Error" description={error} type="error" showIcon />;
+  }
   return (
     <>
       <h2>{type}</h2>

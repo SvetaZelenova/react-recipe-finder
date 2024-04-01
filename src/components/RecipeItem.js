@@ -1,30 +1,39 @@
 import { Link, useParams } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Card } from "antd";
+import { Alert, Card } from "antd";
+import useFetch from "../hooks/useFetch";
 
 const RecipeItem = () => {
   const params = useParams();
-  const [recipeInfo, setRecipeInfo] = useState({});
 
-  useEffect(() => {
-    fetchRecipeData(params.recipeId);
-  }, [params.recipeId]);
   const fetchRecipeData = async (id) => {
-    const api = await fetch(
+    const response = await fetch(
       `https://api.spoonacular.com/recipes/${id}/information?apiKey=${process.env.REACT_APP_API_KEY}`
     );
-    const data = await api.json();
-    setRecipeInfo(data);
+    if (!response.ok) {
+      throw Error(`couldn't fetch the data. please try again`);
+    }
+    const data = response.json();
+    return data;
   };
 
+  const { fetchedData: recipeInfo, error } = useFetch(
+    fetchRecipeData,
+    params.recipeId
+  );
+
+  if (error) {
+    return <Alert message="Error" description={error} type="error" showIcon />;
+  }
   return (
-    <>
-      <h1>Recipe {recipeInfo.id}</h1>
-      <Link to=".." relative="path">
-        Back to all
-      </Link>
-      <Card title={recipeInfo.title} />
-    </>
+    recipeInfo && (
+      <>
+        <h1>Recipe {recipeInfo.id}</h1>
+        <Link to=".." relative="path">
+          Back to all
+        </Link>
+        <Card title={recipeInfo.title} />
+      </>
+    )
   );
 };
 
