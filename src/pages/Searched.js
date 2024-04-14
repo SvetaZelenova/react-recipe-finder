@@ -2,11 +2,12 @@ import { Alert, Card, Col, Row } from "antd";
 import { Link, useParams } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
 import { apiKey } from "../constants/constants";
+import { useCallback } from "react";
 
 const SearchedRecipes = () => {
-  const params = useParams();
+  const { query } = useParams();
 
-  const getRecipesByQuery = async (query) => {
+  const getRecipesByQuery = useCallback(async (query) => {
     const response = await fetch(
       `https://api.spoonacular.com/recipes/complexSearch?apiKey=${apiKey}&query=${query}&number=9`
     );
@@ -15,10 +16,10 @@ const SearchedRecipes = () => {
     }
     const data = await response.json();
     return data.results;
-  };
+  }, []);
   const { error, fetchedData: foundRecipes } = useFetch(
     getRecipesByQuery,
-    params.query
+    query
   );
   return (
     <>

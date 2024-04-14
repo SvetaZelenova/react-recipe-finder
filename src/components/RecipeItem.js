@@ -1,11 +1,12 @@
 import { Link, useParams } from "react-router-dom";
 import { Alert, Card } from "antd";
 import useFetch from "../hooks/useFetch";
+import { useCallback } from "react";
 
 const RecipeItem = () => {
-  const params = useParams();
+  const { recipeId } = useParams();
 
-  const fetchRecipeData = async (id) => {
+  const fetchRecipeData = useCallback(async (id) => {
     const response = await fetch(
       `https://api.spoonacular.com/recipes/${id}/information?apiKey=${process.env.REACT_APP_API_KEY}`
     );
@@ -14,11 +15,11 @@ const RecipeItem = () => {
     }
     const data = response.json();
     return data;
-  };
+  }, []);
 
   const { fetchedData: recipeInfo, error } = useFetch(
     fetchRecipeData,
-    params.recipeId
+    recipeId
   );
 
   if (error) {

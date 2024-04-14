@@ -2,9 +2,10 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import { Alert, Card, Carousel, Col } from "antd";
 import { Link } from "react-router-dom";
 import useFetch from "../hooks/useFetch";
+import { useCallback } from "react";
 
 const RecipeCarousel = ({ type }) => {
-  const fetchRecipesByCategory = async (type) => {
+  const fetchRecipesByCategory = useCallback( async (type) => {
     const url =
       type === "random"
         ? `https://api.spoonacular.com/recipes/random?apiKey=${process.env.REACT_APP_API_KEY}&number=9`
@@ -15,7 +16,7 @@ const RecipeCarousel = ({ type }) => {
     }
     const data = await response.json();
     return type === "random" ? data.recipes : data.results;
-  };
+  }, []);
 
   const { fetchedData: foundRecipes, error } = useFetch(
     fetchRecipesByCategory,
