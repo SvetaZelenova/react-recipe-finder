@@ -6,7 +6,6 @@ import {
   createMemoryRouter,
 } from "react-router-dom";
 import SearchedRecipes from "../pages/Searched";
-// import "@testing-library/jest-dom";
 
 describe("Search", () => {
   test("on initial render", () => {
