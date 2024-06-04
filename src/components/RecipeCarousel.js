@@ -18,15 +18,19 @@ const RecipeCarousel = ({ type }) => {
     return type === "random" ? data.recipes : data.results;
   }, []);
 
-  const { fetchedData: foundRecipes, error } = useFetch(
+  const { data: foundRecipes, error, isPending, isError } = useFetch(
     fetchRecipesByCategory,
-    type
+    type,
+    `recipe-category-${type}`
   );
   const SlickButtonFix = ({ currentSlide, slideCount, children, ...props }) => (
     <span {...props}>{children}</span>
   );
-  if (error) {
-    return <Alert message="Error" description={error} type="error" showIcon />;
+  if (isError) {
+    return <Alert message="Error" description={error.message} type="error" showIcon />;
+  }
+  if (isPending) {
+    return <p>Pending...</p>
   }
   return (
     <>

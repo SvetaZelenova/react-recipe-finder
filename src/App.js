@@ -5,6 +5,7 @@ import Root from "./pages/Root";
 import ErrorPage from "./pages/Error";
 import RecipeItem from "./components/RecipeItem";
 import SearchedRecipes from "./pages/Searched";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 const router = createBrowserRouter([
   {
@@ -13,14 +14,19 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       { path: "", element: <HomePage /> },
-      { path: "search/:query", element: <SearchedRecipes />},
+      { path: "search/:query", element: <SearchedRecipes /> },
       { path: "recipes", element: <RecipesPage /> },
       { path: "recipes/:recipeId", element: <RecipeItem /> },
     ],
   },
 ]);
+const queryCLient = new QueryClient();
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryCLient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

@@ -15,20 +15,22 @@ const RecipeItem = () => {
     return data;
   }, []);
 
-  const { fetchedData: recipeInfo, error } = useFetch(
+  const { data: recipeInfo, error, isError, isPending } = useFetch(
     fetchRecipeData,
-    recipeId
+    recipeId,
+    `recipe-${recipeId}`
   );
 
-  if (error) {
-    return <Alert message="Error" description={error} type="error" showIcon />;
+  if (isError) {
+    return <Alert message="Error" description={error.message} type="error" showIcon />;
+  }
+  if (isPending) {
+    return <p>Pending...</p>
   }
   return (
     recipeInfo && (
       <>
-        <h1>
-          Recipe {recipeInfo.id}
-        </h1>
+        <h1>Recipe {recipeInfo.id}</h1>
         <Link to=".." relative="path">
           Back to all
         </Link>

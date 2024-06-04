@@ -1,21 +1,13 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 
-const useFetch = (getFnc, prm) => {
-  const [fetchedData, setFetchedData] = useState([]);
-  const [error, setError] = useState(null);
+const useFetch = (getFnc, prm, query) => {
+  const { data, isPending, isError, error } = useQuery({
+    queryKey: [query],
+    queryFn: () => getFnc(prm),
+    staleTime: 10000,
+  });
 
-  useEffect(() => {
-    getFnc(prm)
-      .then((res) => {
-        setFetchedData(res)
-      })
-      .catch((err) => {
-        console.log(err);
-        setError(err.message);
-      });
-  }, [prm, getFnc]);
-
-  return { fetchedData, error };
+  return { data, error, isPending, isError };
 };
 
 export default useFetch;

@@ -17,38 +17,55 @@ const SearchedRecipes = () => {
     const data = await response.json();
     return data.results;
   }, []);
-  const { error, fetchedData: foundRecipes } = useFetch(
-    getRecipesByQuery,
-    query
-  );
+
+  const {
+    error,
+    data: foundRecipes,
+    isPending,
+    isError,
+  } = useFetch(getRecipesByQuery, query, `search-${query}`);
+
+  if (isError) {
+    return (
+      <Alert
+        message="Error"
+        description={error.message}
+        type="error"
+        showIcon
+      />
+    );
+  }
+
+  if (isPending) {
+    return <p>Pending...</p>;
+  }
   return (
     <>
       <h1>Recipes found</h1>
-      {error && (
-        <Alert message="Error" description={error} type="error" showIcon />
+      {foundRecipes && (
+        <Row gutter={16}>
+          {foundRecipes.map((item) => {
+            return (
+              <Col className="gutter-row" span={6} key={item.id}>
+                <Link to={`/recipes/${item.id}`} key={item.id}>
+                  <Card
+                    key={item.id}
+                    style={{ marginBottom: 20 }}
+                    title={item.title}
+                    cover={
+                      <img
+                        style={{ padding: "20px 30px" }}
+                        src={item.image}
+                        alt={item.title}
+                      />
+                    }
+                  />
+                </Link>
+              </Col>
+            );
+          })}
+        </Row>
       )}
-      <Row gutter={16}>
-        {foundRecipes.map((item) => {
-          return (
-            <Col className="gutter-row" span={6} key={item.id}>
-              <Link to={`/recipes/${item.id}`} key={item.id}>
-                <Card
-                  key={item.id}
-                  style={{ marginBottom: 20 }}
-                  title={item.title}
-                  cover={
-                    <img
-                      style={{ padding: "20px 30px" }}
-                      src={item.image}
-                      alt={item.title}
-                    />
-                  }
-                />
-              </Link>
-            </Col>
-          );
-        })}
-      </Row>
     </>
   );
 };
